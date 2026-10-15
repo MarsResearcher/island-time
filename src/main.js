@@ -280,12 +280,15 @@ const audio=(()=>{let ctx,master,muted=false,mood=1,started=false;const scale=[0
    noiseBuf=ctx.createBuffer(1,ctx.sampleRate*.12,ctx.sampleRate);const nd=noiseBuf.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=(Math.random()*2-1)*(1-i/nd.length);
    pad();ambient();},
   step(){if(!ctx)return;const s=ctx.createBufferSource();s.buffer=noiseBuf;const f=ctx.createBiquadFilter();f.type='lowpass';f.frequency.value=700+Math.random()*300;const g=ctx.createGain();g.gain.value=.07;s.connect(f).connect(g).connect(master);s.start();},
+  land(v=1){if(!ctx)return;const t=ctx.currentTime;const s=ctx.createBufferSource();s.buffer=noiseBuf;const f=ctx.createBiquadFilter();f.type='lowpass';f.frequency.value=420;const g=ctx.createGain();g.gain.value=.11*v;s.connect(f).connect(g).connect(master);s.start(t);
+   const o=ctx.createOscillator(),og=ctx.createGain();o.frequency.setValueAtTime(160,t);o.frequency.exponentialRampToValueAtTime(70,t+.12);og.gain.setValueAtTime(.05*v,t);og.gain.exponentialRampToValueAtTime(.0001,t+.16);o.connect(og).connect(master);o.start(t);o.stop(t+.18);},
   chime(){if(ctx)pluck(note(81+scale[Math.floor(Math.random()*5)]),ctx.currentTime,.08,2.5);},
   mood(i){mood=i;this.chime();},
   toggle(){muted=!muted;if(master)master.gain.setTargetAtTime(muted?0:.9,ctx.currentTime,.2);return muted;}};})();
 
 // ---------- input
-const keys={};addEventListener('keydown',e=>{keys[e.code]=true;});addEventListener('keyup',e=>{keys[e.code]=false;});
+const keys={};let jumpReq=false;addEventListener('keydown',e=>{keys[e.code]=true;if(e.code==='Space'){e.preventDefault();if(!e.repeat)jumpReq=true;if(document.activeElement&&document.activeElement!==document.body)document.activeElement.blur();}});
+addEventListener('keyup',e=>{if(e.code==='Space')e.preventDefault();},true);addEventListener('keyup',e=>{keys[e.code]=false;});
 let yaw=0.35,pitch=0.42,dist=isMobile?18:14,camT=new THREE.Vector3();let yawT=yaw,pitchT=pitch,distT=dist,camD=dist,lastInput=0;
 const cvs=renderer.domElement;let drag=null;
 cvs.addEventListener('pointerdown',e=>{if(e.target!==cvs)return;drag={id:e.pointerId,x:e.clientX,y:e.clientY};cvs.setPointerCapture(e.pointerId);});
@@ -309,7 +312,14 @@ start.addEventListener('click',begin);
 // ---------- loop
 const ray=new THREE.Raycaster();const occluders=[];house.traverse(o=>{if(o.isMesh)occluders.push(o);});trees.forEach(g=>g.traverse(o=>{if(o.isMesh)occluders.push(o);}));
 const clock=new THREE.Clock();let walkPh=0,lastStep=0,speedNow=0;const sim={x:0,y:0};
-function move(dt){let ix=0,iz=0;if(keys.KeyW||keys.ArrowUp)iz-=1;if(keys.KeyS||keys.ArrowDown)iz+=1;if(keys.KeyA||keys.ArrowLeft)ix-=1;if(keys.KeyD||keys.ArrowRight)ix+=1;ix+=joy.x+sim.x;iz+=joy.y+sim.y;
+const JUMP_V=6.2,GRAV=18;let vy=0,grounded=true,squash=0,squashV=0;
+function jump(dt){if(jumpReq&&grounded){vy=JUMP_V;grounded=false;squash=-.12;squashV=0;}jumpReq=false;
+ if(!grounded){vy-=GRAV*dt;hero.position.y+=vy*dt;if(hero.position.y<=0){const impact=Math.min(1,-vy/JUMP_V);hero.position.y=0;grounded=true;squash=.28*impact;squashV=0;vy=0;audio.land(impact);}}
+ // spring back: squash>0 = flattened, <0 = stretched
+ squashV+=(-squash*260-squashV*16)*dt;squash+=squashV*dt;if(!grounded&&squash>-.08)squash+=(-.08-squash)*Math.min(1,dt*10);
+ body.scale.set(1+squash*.6,1-squash,1+squash*.6);
+ shadowBlob.position.y=.02-hero.position.y;const k=1/(1+hero.position.y*.35);shadowBlob.scale.setScalar(k);shadowBlob.material.opacity=.12*k;}
+function move(dt){jump(dt);let ix=0,iz=0;if(keys.KeyW||keys.ArrowUp)iz-=1;if(keys.KeyS||keys.ArrowDown)iz+=1;if(keys.KeyA||keys.ArrowLeft)ix-=1;if(keys.KeyD||keys.ArrowRight)ix+=1;ix+=joy.x+sim.x;iz+=joy.y+sim.y;
  const l=Math.hypot(ix,iz);let moving=l>.1;if(l>1){ix/=l;iz/=l;}
  const fwd=new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw)),right=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw));
  const dir=fwd.multiplyScalar(-iz).add(right.multiplyScalar(ix));
@@ -321,7 +331,7 @@ function move(dt){let ix=0,iz=0;if(keys.KeyW||keys.ArrowUp)iz-=1;if(keys.KeyS||k
  walkPh+=dt*speedNow*2.6;const s=speedNow/4.2;
  body.position.y=Math.abs(Math.sin(walkPh))*.18*s+Math.sin(clock.elapsedTime*2)*.02;body.rotation.z=Math.sin(walkPh)*.08*s;
  feet[0].position.z=Math.sin(walkPh)*.3*s;feet[1].position.z=-Math.sin(walkPh)*.3*s;feet[0].position.y=.12+Math.max(0,Math.cos(walkPh))*.12*s;feet[1].position.y=.12+Math.max(0,-Math.cos(walkPh))*.12*s;
- if(s>.5&&Math.floor(walkPh/Math.PI)!==lastStep){lastStep=Math.floor(walkPh/Math.PI);audio.step();}}
+ if(grounded&&s>.5&&Math.floor(walkPh/Math.PI)!==lastStep){lastStep=Math.floor(walkPh/Math.PI);audio.step();}}
 function tick(){const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime;sway.value=t;skyU.t.value=t;
  move(dt);lerpEnv(Math.min(1,dt*1.6));
  camT.lerp(new THREE.Vector3(hero.position.x,hero.position.y+1.4,hero.position.z),Math.min(1,dt*5));
@@ -345,4 +355,4 @@ function tick(){const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime;sway
  composer.render();requestAnimationFrame(tick);}
 setTime(1,true);lerpEnv(1);tick();
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight);gradeU.res.value.set(innerWidth,innerHeight);if(fxaa)fxaa.material.uniforms.resolution.value.set(1/(innerWidth*renderer.getPixelRatio()),1/(innerHeight*renderer.getPixelRatio()));});
-window.__cozy={setTime,begin,sim,rot:(dy,dp=0)=>{yaw+=dy;yawT=yaw;pitch=pitchT=THREE.MathUtils.clamp(pitch+dp,.08,1.25);lastInput=performance.now();},hero};
+window.__cozy={setTime,begin,sim,jump:()=>{jumpReq=true;},state:()=>({y:hero.position.y,grounded,sy:body.scale.y}),rot:(dy,dp=0)=>{yaw+=dy;yawT=yaw;pitch=pitchT=THREE.MathUtils.clamp(pitch+dp,.08,1.25);lastInput=performance.now();},hero};
