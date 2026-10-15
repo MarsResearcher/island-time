@@ -19,6 +19,21 @@ canvas{display:block}
 #start .b{margin-top:28px;padding:10px 28px;border-radius:999px;letter-spacing:.3em;font-size:13px}
 @media (max-width:700px){#hint{display:none}#times button{padding:8px 12px;font-size:12px}#hint{bottom:150px;left:auto;right:16px;transform:none;font-size:11px}#title{top:16px;left:18px}}
 body.dark #title,body.dark #times button,body.dark #mute{color:#fff4e6}body.dark #times button.on{color:#6b4f45}body.dark .glass{background:rgba(60,60,110,.35)}
+
+/* v2 refined */
+.glass{background:linear-gradient(135deg,rgba(255,255,255,.38),rgba(255,245,235,.18));backdrop-filter:blur(18px) saturate(1.5);-webkit-backdrop-filter:blur(18px) saturate(1.5);border:1px solid rgba(255,255,255,.55);box-shadow:0 10px 40px rgba(90,50,40,.14),inset 0 1px 0 rgba(255,255,255,.7)}
+#title{font-family:"Songti SC","Noto Serif CJK SC","Source Han Serif SC",serif;font-size:18px;letter-spacing:.42em;color:#fffaf2;text-shadow:0 2px 14px rgba(90,50,40,.35);opacity:0;transition:opacity 1.6s 1s}
+#title small{font-family:-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif;font-size:11px;letter-spacing:.3em;opacity:.8;margin-top:8px}
+#times,#mute,#hint,#joy{opacity:0;transition:opacity 1.4s 1.4s}
+body.live #title{opacity:1}body.live #times,body.live #mute,body.live #joy{opacity:1}body.live #hint{opacity:.85}
+#times button,#mute{color:#fffaf2;text-shadow:0 1px 6px rgba(90,50,40,.3);letter-spacing:.3em}
+#times button.on{background:rgba(255,255,255,.88);color:#7a5246;text-shadow:none}
+#start{background:radial-gradient(ellipse at 50% 45%,rgba(255,236,214,.25),rgba(120,80,90,.35));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#fffaf2;transition:opacity 1.6s,backdrop-filter 1.6s}
+#start h1{font-family:"Songti SC","Noto Serif CJK SC","Source Han Serif SC",serif;font-size:44px;letter-spacing:.7em;padding-left:.7em;text-shadow:0 4px 30px rgba(90,50,40,.4);animation:rise 2.2s ease both}
+#start p{animation:rise 2.2s .6s ease both;text-shadow:0 1px 10px rgba(90,50,40,.4)}
+#start .b{animation:rise 2s 1.2s ease both;color:#fffaf2}
+@keyframes rise{from{opacity:0;transform:translateY(14px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+@media (max-width:700px){#start h1{font-size:32px}}
 </style></head><body>
 <div id="title">小岛时光<small>一个可以慢下来的地方</small></div>
 <button id="mute" class="glass">♪ 声音</button>

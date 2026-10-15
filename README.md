@@ -1,9 +1,13 @@
 # 小岛时光 · Island Time
 
-> 一个可以慢下来的地方。
+> 一个可以慢下来的地方。（v2：更柔的光、会发光的水面与灯笼、聪明的镜头）
 > 风很轻，花开着，屋里的灯会为你亮起——戴上耳机，慢慢走走。
 
-![小岛时光 · 下午](shots/desk-2-afternoon.png)
+![小岛时光 · 夜晚](shots/v2/desk-4-night.png)
+
+| 黄昏 | 散步转视角 |
+|---|---|
+| ![黄昏](shots/v2/desk-3-dusk.png) | ![散步](shots/v2/desk-5-walk-rotate.png) |
 
 🌐 在线体验：<https://marsresearcher.github.io/island-time/>
 
@@ -27,21 +31,21 @@
 | 切换时间 | 底部按钮 **上午 / 下午 / 黄昏 / 夜晚** | 同左 |
 | 声音 | 右上角 **♪ 声音 / 静音** | 同左 |
 
-## 截图
+## 截图（v2）
 
 | 上午 | 下午 | 黄昏 | 夜晚 |
 |---|---|---|---|
-| ![上午](shots/desk-1-morning.png) | ![下午](shots/desk-2-afternoon.png) | ![黄昏](shots/desk-3-dusk.png) | ![夜晚](shots/desk-4-night.png) |
+| ![上午](shots/v2/desk-1-morning.png) | ![下午](shots/v2/desk-2-afternoon.png) | ![黄昏](shots/v2/desk-3-dusk.png) | ![夜晚](shots/v2/desk-4-night.png) |
 
 | 开始 | 散步转视角 | 夜里的小屋 |
 |---|---|---|
-| ![开始](shots/desk-0-start.png) | ![散步](shots/desk-5-walk-rotate.png) | ![小屋](shots/desk-6-night-house.png) |
+| ![开始](shots/v2/desk-0-start.png) | ![散步](shots/v2/desk-5-walk-rotate.png) | ![小屋](shots/v2/desk-6-night-house.png) |
 
 移动端（竖屏）：
 
 | 开始 | 下午 | 黄昏 |
 |---|---|---|
-| <img src="shots/mobile-0-start.png" width="220"> | <img src="shots/mobile-1-afternoon.png" width="220"> | <img src="shots/mobile-2-dusk.png" width="220"> |
+| <img src="shots/v2/mobile-0-start.png" width="220"> | <img src="shots/v2/mobile-1-afternoon.png" width="220"> | <img src="shots/v2/mobile-2-dusk.png" width="220"> |
 
 ## 本地运行 / 开发
 
@@ -51,7 +55,7 @@
 npm install
 npm run build        # esbuild src/main.js → cozy.js
 # 重新截图（需要本机 Chrome；可用 CHROME_PATH、SHOTS_DIR 覆盖默认值）：
-CHROME_PATH=/path/to/chrome npm run shots
+CHROME_PATH=/path/to/chrome npm run shots   # v2 截图 → shots/v2/
 ```
 
 ## 目录
@@ -60,8 +64,9 @@ CHROME_PATH=/path/to/chrome npm run shots
 index.html   页面与 UI（毛玻璃按钮、开始遮罩）
 cozy.js      打包后的完整程序（three.js 已内置）
 src/main.js  源码：场景、光照、时间、音频、输入
-shot.mjs     Playwright 自动截图脚本
-shots/       截图
+shot.mjs     v1 截图脚本
+shot2.mjs    v2 截图脚本
+shots/       截图（v1 在根目录，v2 在 shots/v2/）
 DESIGN.md    设计说明
 ```
 
