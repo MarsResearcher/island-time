@@ -1,0 +1,29 @@
+<!doctype html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>小岛时光</title><style>
+html,body{margin:0;height:100%;overflow:hidden;background:#fbe3c8;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Noto Sans CJK SC",sans-serif;touch-action:none;user-select:none;-webkit-user-select:none}
+canvas{display:block}
+.glass{background:rgba(255,250,244,.42);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border:1px solid rgba(255,255,255,.6);box-shadow:0 6px 24px rgba(120,80,60,.12)}
+#title{position:fixed;top:20px;left:24px;color:#6b4f45;letter-spacing:.2em;font-size:15px;opacity:.85}
+#title small{display:block;font-size:11px;letter-spacing:.12em;opacity:.7;margin-top:4px}
+#times{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:4px;padding:5px;border-radius:999px}
+#times button,#mute{white-space:nowrap;border:0;background:transparent;color:#6b4f45;font:inherit;font-size:13px;letter-spacing:.15em;padding:8px 16px;border-radius:999px;cursor:pointer;transition:.4s}
+#times button.on{background:rgba(255,255,255,.85);box-shadow:0 2px 10px rgba(180,120,90,.18)}
+#mute{position:fixed;top:16px;right:18px;padding:7px 14px;font-size:12px}#mute.off{opacity:.55}
+#hint{position:fixed;bottom:84px;left:50%;transform:translateX(-50%);color:#fff;font-size:12px;letter-spacing:.12em;text-shadow:0 1px 6px rgba(90,60,50,.4);opacity:.85;white-space:nowrap}
+#joy{display:none;position:fixed;left:28px;bottom:96px;width:110px;height:110px;border-radius:50%;touch-action:none}
+#knob{position:absolute;left:33px;top:33px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.8);box-shadow:0 2px 10px rgba(150,100,80,.25)}
+#start{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,236,222,.3);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#6b4f45;cursor:pointer;transition:opacity .9s;z-index:5}
+#start.hide{opacity:0;pointer-events:none}
+#start h1{font-weight:400;letter-spacing:.5em;font-size:30px;margin:0 0 12px;padding-left:.5em}
+#start p{letter-spacing:.25em;font-size:13px;opacity:.75;margin:4px}
+#start .b{margin-top:28px;padding:10px 28px;border-radius:999px;letter-spacing:.3em;font-size:13px}
+@media (max-width:700px){#hint{display:none}#times button{padding:8px 12px;font-size:12px}#hint{bottom:150px;left:auto;right:16px;transform:none;font-size:11px}#title{top:16px;left:18px}}
+body.dark #title,body.dark #times button,body.dark #mute{color:#fff4e6}body.dark #times button.on{color:#6b4f45}body.dark .glass{background:rgba(60,60,110,.35)}
+</style></head><body>
+<div id="title">小岛时光<small>一个可以慢下来的地方</small></div>
+<button id="mute" class="glass">♪ 声音</button>
+<div id="times" class="glass"><button>上午</button><button>下午</button><button>黄昏</button><button>夜晚</button></div>
+<div id="hint">WASD 散步 · 拖动转视角 · 滚轮远近</div>
+<div id="joy" class="glass"><div id="knob"></div></div>
+<div id="start"><h1>小岛时光</h1><p>风很轻，花开着，屋里的灯会为你亮起</p><p>戴上耳机，慢慢走走</p><div class="b glass">轻触进入</div></div>
+<script src="cozy.js"></script></body></html>

@@ -1,0 +1,29 @@
+# dependencies
+node_modules/
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# env / misc
+.env
+.env.*
+.cache/
+tmp/
+
+# NOTE: cozy.js (bundle) and shots/ are intentionally tracked.
